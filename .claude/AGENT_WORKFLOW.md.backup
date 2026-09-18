@@ -1,0 +1,414 @@
+# Project Agent Workflow
+
+This project uses a structured agent workflow.
+
+The agent should select and combine project skills based on the task.
+
+---
+
+## 1. TASK CLASSIFICATION
+
+Before acting, classify the request.
+
+Possible categories:
+
+- Planning
+- Research
+- Feature development
+- Bug fixing
+- Refactoring
+- Testing
+- Code review
+- Git/GitHub
+- Security
+- Architecture
+- Documentation
+- Deployment
+- Multiple categories
+
+A task may use multiple categories.
+
+---
+
+## 2. DEFAULT WORKFLOW
+
+For non-trivial engineering tasks:
+
+RESEARCH
+↓
+PLAN
+↓
+IMPLEMENT
+↓
+TEST
+↓
+REVIEW
+↓
+VERIFY
+
+Do not skip stages without a reason.
+
+---
+
+## 3. SKILL SELECTION
+
+### Planning
+
+Use:
+
+planning
+
+when:
+- The task spans multiple files.
+- Architecture may change.
+- Requirements are unclear.
+- Multiple implementation approaches exist.
+
+### Research
+
+Use:
+
+research
+
+when:
+- The answer depends on current information.
+- An API or library is unfamiliar.
+- Version-specific behavior matters.
+- Repository behavior is unclear.
+
+### Debugging
+
+Use:
+
+debugging
+
+when:
+- A test fails.
+- A runtime error occurs.
+- Behavior differs from expectations.
+- A build fails.
+
+### Code Review
+
+Use:
+
+code-review
+
+after:
+- Significant implementation.
+- Bug fixes.
+- Refactors.
+- Security-sensitive changes.
+
+### Testing
+
+Use:
+
+testing
+
+after:
+- Feature implementation.
+- Bug fixes.
+- API changes.
+- Database changes.
+- Configuration changes.
+
+### Git
+
+Use:
+
+git
+
+for:
+- Branching.
+- Commits.
+- Diffs.
+- Merges.
+- Rebases.
+- Remote operations.
+
+### GitHub
+
+Use:
+
+github
+
+for:
+- Issues.
+- Pull requests.
+- GitHub Actions.
+- Repository configuration.
+- GitHub API operations.
+
+### Security
+
+Use:
+
+security
+
+when:
+- Authentication changes.
+- Authorization changes.
+- User data is involved.
+- Secrets are involved.
+- External input is processed.
+- APIs or file uploads are modified.
+- Dependencies with security implications change.
+
+### Architecture
+
+Use:
+
+architecture
+
+when:
+- Multiple application layers are affected.
+- New services are introduced.
+- Data flow changes.
+- Database architecture changes.
+- Major restructuring is proposed.
+
+### Documentation
+
+Use:
+
+documentation
+
+when:
+- Setup changes.
+- APIs change.
+- Architecture changes.
+- User-facing behavior changes.
+- Commands or configuration change.
+
+---
+
+# 4. IMPLEMENTATION PROTOCOL
+
+Before editing:
+
+1. Inspect git status.
+2. Inspect relevant files.
+3. Search for existing implementations.
+4. Identify tests.
+5. Identify dependencies.
+6. Form a plan.
+
+Then implement.
+
+---
+
+# 5. VALIDATION PROTOCOL
+
+After implementation:
+
+1. Run targeted tests.
+2. Run type checking when available.
+3. Run linting when available.
+4. Run build checks when relevant.
+5. Inspect git diff.
+6. Review the implementation.
+7. Verify the original requirement.
+
+---
+
+# 6. FAILURE PROTOCOL
+
+When something fails:
+
+DO NOT:
+
+- blindly retry;
+- hide the error;
+- remove functionality;
+- randomly change unrelated files.
+
+Instead:
+
+ERROR
+↓
+INSPECT
+↓
+HYPOTHESIS
+↓
+SMALL CHANGE
+↓
+RETEST
+↓
+VERIFY
+
+If the hypothesis is disproven, update the diagnosis.
+
+---
+
+# 7. MULTI-SKILL TASKS
+
+Complex tasks should combine skills.
+
+Example:
+
+A new authenticated API endpoint:
+
+research
++
+planning
++
+architecture
++
+security
++
+implementation
++
+testing
++
+code-review
++
+documentation
+
+A production bug:
+
+research
++
+debugging
++
+testing
++
+code-review
+
+A major architectural change:
+
+research
++
+architecture
++
+planning
++
+security
++
+testing
++
+documentation
+
+A GitHub PR:
+
+git
++
+github
++
+code-review
++
+testing
+
+---
+
+# 8. EVIDENCE REQUIREMENT
+
+The agent must distinguish:
+
+VERIFIED
+LIKELY
+UNVERIFIED
+
+Never present an unverified assumption as fact.
+
+---
+
+# 9. MINIMAL CHANGE PRINCIPLE
+
+Prefer:
+
+smallest correct change
+
+over:
+
+largest possible improvement.
+
+Do not refactor unrelated code during feature work unless the refactor is necessary.
+
+---
+
+# 10. FINAL RESPONSE
+
+When finished, report:
+
+## Changed
+
+What was modified.
+
+## Verified
+
+What was actually tested or checked.
+
+## Remaining
+
+Anything that could not be verified or requires user action.
+
+Do not simply say "done."
+
+# Tool Selection Matrix
+
+Use the available tools deliberately.
+
+## Filesystem MCP
+
+Use for:
+- repository exploration
+- reading project files
+- locating implementations
+- inspecting configuration
+- checking generated artifacts
+
+Do not modify files during investigation unless explicitly required.
+
+## Context7
+
+Use when:
+- an external library API is involved
+- framework behavior may be version-dependent
+- implementation depends on current documentation
+- the model is uncertain about an API
+
+Prefer version-specific documentation.
+
+## Fetch
+
+Use when:
+- official documentation is not available through Context7
+- a public API/documentation page must be retrieved
+- external technical information needs verification
+
+Prefer primary sources.
+
+## Playwright
+
+Use when:
+- changing frontend behavior
+- implementing user flows
+- debugging browser behavior
+- verifying rendered UI
+- validating forms, navigation, authentication, or interactions
+
+## Tool-selection rule
+
+Do not use a tool merely because it exists.
+
+Use the smallest set of tools that can establish reliable evidence for the task.
+
+# Mandatory Verification Loop
+
+For non-trivial implementation:
+
+1. Understand the request.
+2. Inspect the relevant repository code.
+3. Identify affected architecture.
+4. Research uncertain external APIs.
+5. Plan the smallest appropriate change.
+6. Implement.
+7. Run static checks.
+8. Run relevant tests.
+9. Run browser verification when UI behavior changed.
+10. Perform security review when authentication, authorization, input handling, secrets, files, payments, or user data are affected.
+11. Review the final diff.
+12. Report verified results and remaining uncertainty.
+
+Never skip verification merely because the implementation appears obvious.
