@@ -41,6 +41,59 @@ Absence claims must state the inspected scope.
 
 ---
 
+## Evidence Classification Rules
+
+VERIFIED
+Directly established by executable behavior, tests, or an exact repository
+artifact that proves the claim.
+
+OBSERVED
+Directly visible in source, configuration, filesystem state, or documentation,
+but does not by itself establish runtime behavior.
+
+INFERRED
+A conclusion derived from verified or observed evidence.
+
+UNKNOWN
+The inspected evidence is insufficient to establish the claim.
+
+Important:
+- A dependency being installed does not prove it is used.
+- Documentation does not prove implementation.
+- A directory existing does not prove it contains or executes the expected system.
+- Absence claims must state their inspection scope.
+- "Not found" is not automatically equivalent to "does not exist."
+- Contradictions between documentation and implementation must be explicitly
+  recorded.
+- When documentation and implementation disagree, do not silently choose one.
+  Record the conflict and resolve it during planning.
+- Runtime evidence has higher priority than static inspection.
+- Static inspection has higher priority than documentation.
+---
+
+# Skill Selection Principle
+
+Prefer:
+
+1. Directly relevant skill
+2. Supporting domain skill
+3. Testing skill
+4. Verification skill
+
+Avoid loading unrelated skills.
+
+More instructions do not automatically produce better results.
+
+The objective is:
+
+RELEVANT CONTEXT
++
+STRONG EVIDENCE
++
+SMALL CHANGE
++
+REAL VERIFICATION
+
 # 1. Core Operating Model
 
 Every non-trivial task follows:
