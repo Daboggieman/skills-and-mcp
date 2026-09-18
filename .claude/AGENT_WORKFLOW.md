@@ -11,6 +11,35 @@ The goal is to select the smallest set of skills that provides reliable
 coverage of the task.
 
 ---
+## Evidence Classification Discipline
+
+Evidence labels must describe the strength of the evidence, not the confidence
+of the agent.
+
+VERIFIED:
+A claim is directly demonstrated by executable behavior, tests, or an exact
+repository artifact that establishes the claim.
+
+OBSERVED:
+A fact is directly visible in source, configuration, filesystem state, or
+documentation, but does not establish runtime behavior.
+
+INFERRED:
+A conclusion logically derived from VERIFIED or OBSERVED evidence.
+
+UNKNOWN:
+The inspected evidence is insufficient to establish the claim.
+
+Never use VERIFIED merely because:
+- a dependency is installed
+- a directory exists
+- documentation says something should exist
+- a file contains a related implementation
+- no match was found in a limited search
+
+Absence claims must state the inspected scope.
+
+---
 
 # 1. Core Operating Model
 
